@@ -299,7 +299,7 @@ function showApplicationModal(application) {
         </div>
         <div class="mb-3">
             <strong>Reference Source:</strong>
-            <p>${application.referenceSource ? formatApplicationType(application.referenceSource) : 'N/A'}</p>
+            <p>${application.referenceSource ? formatReferenceSource(application.referenceSource) : 'N/A'}</p>
         </div>
         <div class="mb-3">
             <strong>Submitted Date:</strong>
@@ -377,7 +377,7 @@ function showAdminApplicationModal(application) {
         </div>
         <div class="mb-3">
             <strong>Reference Source:</strong>
-            <p>${application.referenceSource ? formatApplicationType(application.referenceSource) : 'N/A'}</p>
+            <p>${application.referenceSource ? formatReferenceSource(application.referenceSource) : 'N/A'}</p>
         </div>
         <div class="mb-3">
             <strong>Submitted Date:</strong>
@@ -436,7 +436,16 @@ function loadProfileData() {
 
 function updateProfile(profile) {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-    alert('Profile updated successfully!');
+    // Show success message using Bootstrap alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+    alertDiv.style.zIndex = '9999';
+    alertDiv.innerHTML = `
+        <i class="bi bi-check-circle"></i> Profile updated successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 3000);
 }
 
 function loadRecentApplications() {
@@ -502,6 +511,12 @@ function formatStatus(status) {
 
 function formatApplicationType(type) {
     return type.split('_').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+}
+
+function formatReferenceSource(source) {
+    return source.split('_').map(word => 
         word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
 }
