@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - Application Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> Application Portal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="submit.html">Submit Application</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="applications.html">My Applications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">
+                            <i class="bi bi-person-circle"></i> Profile
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Applications List -->
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h2><i class="bi bi-list-ul"></i> My Applications</h2>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="submit.html" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> New Application
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter and Search -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchInput" 
+                               placeholder="Search applications...">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="under_review">Under Review</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="typeFilter">
+                            <option value="">All Types</option>
+                            <option value="employment">Employment</option>
+                            <option value="grant">Grant</option>
+                            <option value="scholarship">Scholarship</option>
+                            <option value="vendor">Vendor Registration</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-secondary w-100" onclick="filterApplications()">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="applicationsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Position/Program</th>
+                                <th>Submitted Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsTableBody">
+                            <!-- Applications will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noApplications" class="text-center py-5 d-none">
+                    <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                    <h4 class="mt-3">No Applications Found</h4>
+                    <p class="text-muted">Start by submitting your first application.</p>
+                    <a href="submit.html" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Submit Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Detail Modal -->
+    <div class="modal fade" id="applicationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Application Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Application details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 Application Portal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadApplications();
+        });
+
+        function filterApplications() {
+            loadApplications();
+        }
+
+        function viewApplication(id) {
+            const application = getApplicationById(id);
+            if (application) {
+                showApplicationModal(application);
+            }
+        }
+
+        function deleteApplication(id) {
+            if (confirm('Are you sure you want to delete this application?')) {
+                removeApplication(id);
+                loadApplications();
+            }
+        }
+    </script>
+</body>
+</html>
